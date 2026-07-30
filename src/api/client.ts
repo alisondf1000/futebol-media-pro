@@ -17,9 +17,10 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     );
   }
 
+  const isGet = !init.method || init.method === "GET";
   const response = await fetch(url.toString(), {
     headers: {
-      "Content-Type": "application/json",
+      ...(isGet ? {} : { "Content-Type": "application/json" }),
       ...init.headers,
     },
     ...init,
