@@ -1,0 +1,103 @@
+import { useParams, Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
+import { useClassificacao } from "@/hooks/useClassificacao";
+import { useJogosDoTime } from "@/hooks/useJogosDoTime";
+
+export function TimePerfil() {
+  const { id } = useParams<{ id: string }>();
+  const idTime = id ? Number(id) : undefined;
+
+  const { data: tabela, isLoading: carregandoTabela } = useClassificacao();
+  const { data: jogos, isLoading: carregandoJogos, isError, error } = useJogosDoTime(idTime);
+
+  const estatisticas = tabela?.find((linha) => linha.time.id === idTime);
+
+  return (
+    <div className="space-y-4">
+      <Link
+        to="/competicoes"
+        className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors"
+      >
+        <ArrowLeft size={16} />
+        Voltar para classificação
+      </Link>
+
+      {carregandoTabela && (
+        <div className="rounded-xl border border-border bg-background-surface p-6 text-sm text-text-secondary">
+          Carregando time...
+        </div>
+      )}
+
+      {estatisticas && (
+        <>
+          <div className="rounded-xl border border-border bg-background-surface p-4 flex items-center gap-3">
+            <img src={estatisticas.time.escudo} alt="" className="w-10 h-10 object-contain" />
+            <div>
+              <h1 className="text-lg font-semibold text-text-primary">{estatisticas.time.nome}</h1>
+              <p className="text-sm text-text-secondary">{estatisticas.posicao}º lugar no Brasileirão</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+            <EstatCard label="Pontos" valor={estatisticas.pontos} />
+            <EstatCard label="Jogos" valor={estatisticas.jogos} />
+            <EstatCard label="Vitórias" valor={estatisticas.vitorias} />
+            <EstatCard label="Empates" valor={estatisticas.empates} />
+            <EstatCard label="Derrotas" valor={estatisticas.derrotas} />
+            <EstatCard label="Gols pró" valor={estatisticas.golsPro} />
+            <EstatCard label="Gols contra" valor={estatisticas.golsContra} />
+            <EstatCard label="Saldo de gols" valor={estatisticas.saldoGols} />
+          </div>
+        </>
+      )}
+
+      <div className="rounded-xl border border-border bg-background-surface p-4">
+        <h2 className="text-sm font-semibold text-text-primary mb-3">Últimos e próximos jogos</h2>
+
+        {carregandoJogos && (
+          <p className="text-sm text-text-secondary">Carregando jogos...</p>
+        )}
+
+        {isError && (
+          <p className="text-sm text-danger">
+            Não foi possível carregar os jogos: {(error as Error).message}
+          </p>
+        )}
+
+        <div className="space-y-2">
+          {jogos?.map((jogo) => {
+            const finalizado = jogo.placar.mandante !== null;
+            return (
+              <div
+                key={jogo.id}
+                className="flex items-center justify-between rounded-lg bg-background-elevated px-3 py-2.5"
+              >
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <img src={jogo.mandante.escudo} alt="" className="w-5 h-5 object-contain" />
+                  <span className="text-sm text-text-primary truncate">{jogo.mandante.nome}</span>
+                </div>
+                <span className="px-3 text-sm font-medium text-text-secondary shrink-0">
+                  {finalizado ? `${jogo.placar.mandante} - ${jogo.placar.visitante}` : "vs"}
+                </span>
+                <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                  <span className="text-sm text-text-primary truncate text-right">{jogo.visitante.nome}</span>
+                  <img src={jogo.visitante.escudo} alt="" className="w-5 h-5 object-contain" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EstatCard({ label, valor }: { label: string; valor: number }) {
+  return (
+    <div className="rounded-xl border border-border bg-background-surface p-3 text-center">
+      <p className="text-lg font-semibold text-text-primary">{valor}</p>
+      <p className="text-xs text-text-muted mt-0.5">{label}</p>
+    </div>
+  );
+}
