@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useClassificacao } from "@/hooks/useClassificacao";
 
 export function Competicoes() {
@@ -63,7 +64,10 @@ export function Competicoes() {
                       {item.posicao}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
+                      <Link
+                        to={`/time/${item.time.id}`}
+                        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                      >
                         {item.time.escudo ? (
                           <img
                             src={item.time.escudo}
@@ -74,7 +78,7 @@ export function Competicoes() {
                           <div className="h-6 w-6 rounded-full bg-white/10" />
                         )}
                         <span className="font-medium text-text-primary">{item.time.nome}</span>
-                      </div>
+                      </Link>
                     </td>
                     <td className="px-4 py-3 text-center font-bold text-text-primary">
                       {item.pontos}
