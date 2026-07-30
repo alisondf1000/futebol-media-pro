@@ -9,6 +9,7 @@ export interface ApiResponse<T> {
 }
 
 export interface TimeResumo {
+  id: number;
   nome: string;
   escudo: string;
 }
@@ -22,7 +23,8 @@ export interface Jogo {
   id: number;
   dataHora: string;
   status: string;
-  rodada: number | string;
+  rodada?: number | string;
+  competicao?: string;
   mandante: TimeResumo;
   visitante: TimeResumo;
   placar: Placar;
