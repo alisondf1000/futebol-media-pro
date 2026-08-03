@@ -1,7 +1,4 @@
-@reference "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   html,
@@ -11,20 +8,12 @@
   }
 
   body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
 }
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-background;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-background-elevated rounded-full;
-  }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
